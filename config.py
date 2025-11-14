@@ -31,10 +31,11 @@ LOG_FILE = os.path.expanduser("~/.minishell_log.txt")
 # ============================
 
 # thoi gian cap nhat khi xem process monitor (giay)
+# Co the thay doi truc tiep tu giao dien bang phim +/-
 PMON_INTERVAL = 1.5
 
-# so luong tien trinh toi da hien thi
-PMON_MAX = 20
+# so luong tien trinh toi da hien thi tren mot trang
+PMON_MAX = 15
 
 
 # ============================

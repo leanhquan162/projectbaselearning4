@@ -24,6 +24,13 @@ def handle_builtin(line):
 
     elif cmd == "help":
         print("Built-ins: cd, exit, help, history, jobs, fg, bg, kill, pmon")
+        print("\nProcess Monitor (pmon) - New Features:")
+        print("  • Enhanced display with threads, I/O stats, and color coding")
+        print("  • Pagination (PgUp/PgDn) for large process lists")
+        print("  • Interactive signal sending (k=KILL, t=TERM, s=STOP, C=CONT)")
+        print("  • Process filtering by name (/), CPU (c), Memory (m)")
+        print("  • Adjustable refresh interval (+/-), default 1.5s")
+        print("  • Press 'h' in pmon for detailed help")
         return True
 
     elif cmd == "history":
