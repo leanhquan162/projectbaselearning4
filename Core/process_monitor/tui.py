@@ -53,6 +53,7 @@ def get_process_info(proc: psutil.Process) -> Optional[Dict]:
                 'name': proc.name(),
                 'num_threads': proc.num_threads(),
                 'status': proc.status(),
+                'create_time': proc.create_time(),
             }
             # Lấy thông tin I/O nếu có thể
             try:
@@ -74,6 +75,49 @@ def format_bytes(bytes_val: int) -> str:
             return f"{bytes_val:.1f}{unit}"
         bytes_val /= 1024.0
     return f"{bytes_val:.1f}TB"
+
+
+def format_runtime(create_time: float) -> str:
+    """Format runtime thành dạng dễ đọc (HH:MM:SS hoặc DDd HH:MM)"""
+    try:
+        runtime_seconds = int(time.time() - create_time)
+        
+        if runtime_seconds < 3600:  # Less than 1 hour
+            minutes = runtime_seconds // 60
+            seconds = runtime_seconds % 60
+            return f"{minutes:02d}:{seconds:02d}"
+        elif runtime_seconds < 86400:  # Less than 1 day
+            hours = runtime_seconds // 3600
+            minutes = (runtime_seconds % 3600) // 60
+            seconds = runtime_seconds % 60
+            return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        else:  # 1 day or more
+            days = runtime_seconds // 86400
+            hours = (runtime_seconds % 86400) // 3600
+            minutes = (runtime_seconds % 3600) // 60
+            return f"{days}d{hours:02d}:{minutes:02d}"
+    except:
+        return "N/A"
+
+
+def format_status(status: str) -> str:
+    """Format status thành dạng dễ đọc"""
+    status_map = {
+        'running': 'Run',
+        'sleeping': 'Sleep',
+        'disk-sleep': 'DSleep',
+        'stopped': 'Stop',
+        'tracing-stop': 'TStop',
+        'zombie': 'Zomb',
+        'dead': 'Dead',
+        'wake-kill': 'WKill',
+        'waking': 'Wake',
+        'idle': 'Idle',
+        'locked': 'Lock',
+        'waiting': 'Wait',
+        'parked': 'Park',
+    }
+    return status_map.get(status.lower(), status[:6])
 
 
 def show_process_monitor(stdscr):
@@ -253,7 +297,7 @@ def show_process_monitor(stdscr):
                 table_start_row = header_row + 2
                 try:
                     stdscr.addstr(table_start_row, 0, 
-                                 f"{'PID':<8}{'USER':<12}{'%CPU':>6} {'%MEM':>7}{'THR':>5}{'I/O R':>9}{'I/O W':>9} {'COMMAND':<20}",
+                                 f"{'PID':<8}{'USER':<10}{'%CPU':>6} {'%MEM':>6}{'STATUS':<7}{'RUNTIME':<9}{'THR':>4}{'I/O R':>8}{'I/O W':>8} {'COMMAND':<18}",
                                  curses.A_BOLD | curses.A_UNDERLINE)
                 except curses.error:
                     pass
@@ -287,8 +331,10 @@ def show_process_monitor(stdscr):
                     
                     p = procs_sorted[idx]
                     user = p['username'] if p['username'] else 'N/A'
-                    user_str = user[:10]
-                    cmd_str = p['name'][:18]
+                    user_str = user[:8]
+                    cmd_str = p['name'][:16]
+                    status_str = format_status(p['status'])
+                    runtime_str = format_runtime(p['create_time'])
                     
                     # Xác định màu dựa trên mức sử dụng tài nguyên
                     color = get_color_for_percentage(max(p['cpu_percent'], p['memory_percent']))
@@ -298,7 +344,7 @@ def show_process_monitor(stdscr):
                     if idx == selected_row:
                         attr = curses.color_pair(5) | curses.A_BOLD
                     
-                    line = f"{p['pid']:<8}{user_str:<12}{p['cpu_percent']:>6.1f} {p['memory_percent']:>7.1f}{p['num_threads']:>5}{format_bytes(p['io_read_bytes']):>9}{format_bytes(p['io_write_bytes']):>9} {cmd_str:<20}"
+                    line = f"{p['pid']:<8}{user_str:<10}{p['cpu_percent']:>6.1f} {p['memory_percent']:>6.1f}{status_str:<7}{runtime_str:<9}{p['num_threads']:>4}{format_bytes(p['io_read_bytes']):>8}{format_bytes(p['io_write_bytes']):>8} {cmd_str:<18}"
                     
                     try:
                         stdscr.addstr(row, 0, line[:max_x-1], attr)
