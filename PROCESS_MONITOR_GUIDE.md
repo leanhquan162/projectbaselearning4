@@ -18,6 +18,8 @@ MiniShell> pmon
 - **USER**: Người dùng sở hữu tiến trình
 - **%CPU**: Phần trăm CPU đang sử dụng
 - **%MEM**: Phần trăm Memory đang sử dụng
+- **STATUS**: Trạng thái tiến trình (Run, Sleep, Stop, etc.)
+- **RUNTIME**: Thời gian chạy của tiến trình (MM:SS, HH:MM:SS, hoặc DDdHH:MM)
 - **THR**: Số lượng threads (luồng)
 - **I/O R**: Số byte đã đọc từ disk
 - **I/O W**: Số byte đã ghi vào disk
@@ -289,13 +291,17 @@ pip install psutil
 
 ## Kết Luận
 
-Process Monitor đã được nâng cấp toàn diện với 6 tính năng chính:
+Process Monitor đã được nâng cấp toàn diện với các tính năng chính:
 
-1. ✅ **Thông tin chi tiết**: Threads, I/O, màu sắc
+1. ✅ **Thông tin chi tiết**: Threads, I/O, STATUS, RUNTIME, màu sắc
 2. ✅ **Quản lý danh sách lớn**: Phân trang, tìm kiếm
 3. ✅ **Tương tác cao**: Gửi tín hiệu (KILL, TERM, STOP, CONT)
 4. ✅ **Xử lý lỗi tốt**: Thông báo chi tiết, hướng dẫn khắc phục
 5. ✅ **Tùy biến refresh**: Điều chỉnh real-time (0.5-10s)
 6. ✅ **Lọc linh hoạt**: Tên, CPU, Memory (kết hợp được)
+
+### Cập Nhật Mới Nhất:
+- **STATUS column**: Hiển thị trạng thái hiện tại của tiến trình (Running, Sleeping, Stopped, etc.)
+- **RUNTIME column**: Hiển thị tổng thời gian chạy của tiến trình với định dạng dễ đọc
 
 Giờ đây bạn có thể giám sát và quản lý tiến trình hiệu quả hơn bao giờ hết!
