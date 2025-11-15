@@ -253,7 +253,7 @@ def show_process_monitor(stdscr):
                 table_start_row = header_row + 2
                 try:
                     stdscr.addstr(table_start_row, 0, 
-                                 f"{'PID':<8}{'USER':<12}{'%CPU':<7}{'%MEM':<7}{'THR':<5}{'I/O R':<9}{'I/O W':<9}{'COMMAND':<20}",
+                                 f"{'PID':<8}{'USER':<12}{'%CPU':>6} {'%MEM':>7}{'THR':>5}{'I/O R':>9}{'I/O W':>9} {'COMMAND':<20}",
                                  curses.A_BOLD | curses.A_UNDERLINE)
                 except curses.error:
                     pass
@@ -298,7 +298,7 @@ def show_process_monitor(stdscr):
                     if idx == selected_row:
                         attr = curses.color_pair(5) | curses.A_BOLD
                     
-                    line = f"{p['pid']:<8}{user_str:<12}{p['cpu_percent']:>6.1f}{p['memory_percent']:>7.1f}{p['num_threads']:>5}{format_bytes(p['io_read_bytes']):>9}{format_bytes(p['io_write_bytes']):>9}{cmd_str:<20}"
+                    line = f"{p['pid']:<8}{user_str:<12}{p['cpu_percent']:>6.1f} {p['memory_percent']:>7.1f}{p['num_threads']:>5}{format_bytes(p['io_read_bytes']):>9}{format_bytes(p['io_write_bytes']):>9} {cmd_str:<20}"
                     
                     try:
                         stdscr.addstr(row, 0, line[:max_x-1], attr)
